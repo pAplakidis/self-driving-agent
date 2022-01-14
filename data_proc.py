@@ -9,6 +9,7 @@ from math import pi
 import utils.orientation as orient
 import utils.coordinates as coord
 from utils.camera import img_from_device, denormalize, view_frame_from_device_frame
+from utils.framereader import FrameReader
 
 # TODO: get path points and create a custom log_file for the path_planner
 
@@ -51,10 +52,15 @@ if __name__ == '__main__':
   local_from_ecef = ecef_from_local.T
   frame_positions_local = np.einsum('ij,kj->ki', local_from_ecef, frame_positions - frame_positions[0])
 
-  # TODO: do this for a video instead of one static img
   # show the path
   img = cv2.imread(data_path + 'preview.png')
   draw_path(frame_positions_local[11:250], img)
   cv2.imshow('path', img)
   cv2.waitKey(0)
+  # TODO: do this for a video instead of one static img
+  """
+  fr = FrameReader(data_path + "video.hevc")
+  for i in range(600):
+    img = fr.get(i, pix_fmt='rgb24')[0]
+  """
 
