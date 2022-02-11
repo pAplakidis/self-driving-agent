@@ -47,20 +47,17 @@ if __name__ == '__main__':
   frame_orientations = np.load(data_path + "global_pose/frame_orientations")
   euler_angles_ned_deg = (180/pi)*orient.ned_euler_from_ecef(frame_positions[0], orient.euler_from_quat(frame_orientations))
 
-  # convert the frame_positions to the frame defined by the pose of the first frame
-  ecef_from_local = orient.rot_from_quat(frame_orientations[0])
-  local_from_ecef = ecef_from_local.T
-  frame_positions_local = np.einsum('ij,kj->ki', local_from_ecef, frame_positions - frame_positions[0])
-
-  # show the path
-  img = cv2.imread(data_path + 'preview.png')
-  draw_path(frame_positions_local[11:250], img)
-  cv2.imshow('path', img)
-  cv2.waitKey(0)
-  # TODO: do this for a video instead of one static img
-  """
   fr = FrameReader(data_path + "video.hevc")
   for i in range(600):
+    # convert the frame_positions to the frame defined by the pose of the first frame
+    ecef_from_local = orient.rot_from_quat(frame_orientations[i])
+    local_from_ecef = ecef_from_local.T
+    frame_positions_local = np.einsum('ij,kj->ki', local_from_ecef, frame_positions - frame_positions[i])
+
+    # show the path
+    #img = cv2.imread(data_path + 'preview.png')
     img = fr.get(i, pix_fmt='rgb24')[0]
-  """
+    draw_path(frame_positions_local[10:250], img)
+    cv2.imshow('path', img)
+    cv2.waitKey(1)
 
