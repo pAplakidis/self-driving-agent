@@ -31,10 +31,21 @@ def draw_path(device_path, img, width=1, height=1.2, fill_color=(128, 0, 255), l
 
   for i in range(1, len(img_pts_l)):
     u1, v1, u2, v2 = np.append(img_pts_l[i-1], img_pts_r[i-1])
+    x1, y1 = u1 + (u2-u1 // 2), v1
     u3, v3, u4, v4 = np.append(img_pts_l[i], img_pts_r[i])
+    x2, y2 = u3 + (u4-u3) // 2, v3
     pts = np.array([[u1,v1],[u2,v2],[u4,v4],[u3,v3]], np.int32).reshape((-1,1,2))
-    cv2.fillPoly(img, [pts], fill_color)
-    cv2.polylines(img, [pts], True, line_color)
+    #new_pts = np.array([[x1, y1], [x2, y2]])
+    new_pt = [x2, y2]
+    print("pt%d: (%d, %d)"%(i, x2, y2))
+    #print(new_pts)
+    #for pt in pts:
+    #  cv2.circle(img, pt[0], 1, (255, 0, 0), -1)
+
+    # TODO: make a points list for each frame and then log them to a .txt or .npy file
+    cv2.circle(img, new_pt, 1, (0, 0, 255), -1)
+    #cv2.fillPoly(img, [pts], fill_color)
+    #cv2.polylines(img, [pts], True, line_color)
 
 
 if __name__ == '__main__':
@@ -49,6 +60,7 @@ if __name__ == '__main__':
 
   fr = FrameReader(data_path + "video.hevc")
   for i in range(600):
+    print("[+] Frame", i+1)
     # convert the frame_positions to the frame defined by the pose of the first frame
     ecef_from_local = orient.rot_from_quat(frame_orientations[i])
     local_from_ecef = ecef_from_local.T
