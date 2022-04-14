@@ -1,4 +1,5 @@
 .*.swp
 data/
 plots/
+__pycache__/
 
